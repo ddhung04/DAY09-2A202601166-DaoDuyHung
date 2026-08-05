@@ -1,17 +1,10 @@
 # Kiến trúc hệ thống — Olist Dispute Resolution
 
-## 1. Mục tiêu thiết kế
+## 1. Mục tiêu
 
-Hệ thống xử lý độc lập 50 case theo `EC_POLICY_V2`. Mọi phép join, tính tiền, tính thời gian, evidence ID và quyết định hoàn tiền đều được thực hiện bằng rule engine xác định. Hệ thống không dùng LLM, vì vậy số parameter là 0 và không có nguy cơ model tạo sự kiện không tồn tại trong CSV.
+Hệ thống xử lý 50 case `EC_POLICY_V2` bằng kiến trúc hybrid multi-agent. Các agent dữ liệu đọc CSV, join bảng và tính toán bằng Python; Policy AI dùng `llama-3.1-8b-instant` (8B parameters) để chọn primary issue theo precedence. Policy catalog khai báo ánh xạ cause, responsibility, refund và actions; Verifier độc lập chặn mọi kết quả không khớp dữ liệu hoặc output schema.
 
-Các nguyên tắc bắt buộc:
-
-- `data/` và `input/` chỉ được đọc.
-- Dùng `Decimal` cho tiền và làm tròn `ROUND_HALF_UP` đến 2 chữ số.
-- Timestamp giữ nguyên định dạng nguồn; không chuyển múi giờ.
-- Policy áp dụng theo đúng thứ tự ưu tiên, không có fallback âm thầm.
-- Verifier phải pass trước khi ghi output.
-- Mỗi batch ghi đè trace của lượt chạy trước, không append.
+Thiết kế này đáp ứng đồng thời hai yêu cầu: quyết định policy thật sự do model AI tạo ra, nhưng ID, tiền, timestamp và evidence không được model tự bịa.
 
 ## 2. Sơ đồ agent và handoff
 
@@ -19,69 +12,73 @@ Các nguyên tắc bắt buộc:
 input/EC_XXX.json
         |
         v
-Coordinator (CaseResolver)
+Coordinator / CaseResolver
         |
-        +----> CustomerAgent --------> customer_unique_id, related_order_ids
-        |
-        +----> OrderProductAgent ----> item/seller IDs, product/category context
-        |
-        +----> PaymentAgent ---------> totals, difference, reconciled, split payment
-        |
-        +----> DeliveryAgent --------> delivery variance, seller handoff variance
-        |                                      |
-        +----------------------+---------------+
-                               v
-                         PolicyAgent
-                primary/secondary, party, refund,
-                    root cause và ordered actions
-                               |
-                               v
-                         VerifierAgent
-                  schema + limits + cross-fields
-                         /                 \
-                        v                   v
-             output/EC_XXX.json     logging/trace.jsonl
+        +--> CustomerAgent ------> customer identity + related orders
+        +--> OrderProductAgent --> item/seller/product/category facts
+        +--> PaymentAgent -------> Decimal totals + reconciliation
+        +--> DeliveryAgent ------> delivery + seller handoff variance
+        |                              |
+        +------------------------------+
+                       |
+                       v
+             PolicyAgent (Groq, Llama 3.1 8B)
+               JSON primary classification
+                       |
+                       v
+            Declarative Policy Catalog
+              cause/party/refund/actions
+                       |
+                       v
+                  VerifierAgent
+            schema + source + policy audit
+                 /                 \
+                v                   v
+      output/EC_XXX.json       trace.jsonl
 ```
 
-Mỗi case tạo đúng 7 trace event theo thứ tự: coordinator, customer, order-product, payment, delivery, policy, verifier. Với 50 case, trace cuối có đúng 350 dòng JSONL.
+Mỗi case có đúng 7 trace event: coordinator, customer, order-product, payment, delivery, policy và verifier. Lượt chạy 50 case tạo đúng 350 dòng và ghi đè trace cũ, không append.
 
-## 3. Vai trò, quyền truy cập và contract
+## 3. Vai trò và quyền truy cập
 
-| Agent | Quyền đọc | Handoff tạo ra | Giới hạn quyền |
+| Agent | Dữ liệu được đọc | Handoff | Giới hạn quyền |
 | --- | --- | --- | --- |
-| Coordinator | Case JSON, lookup đã nạp, handoff của agent | Output candidate | Không tự tạo fact ngoài handoff |
-| CustomerAgent | `orders`, `customers` | Customer ID duy nhất và tối đa 5 related orders | Không đưa order lịch sử vào affected entities |
-| OrderProductAgent | `order_items`, `products` | Item, seller, product và category gốc theo thứ tự nguồn | Không sửa CSV; chỉ trả ID tồn tại |
-| PaymentAgent | `order_items`, `order_payments` | Đối soát bằng `Decimal` | Không coi installment là payment row mới |
-| DeliveryAgent | `orders`, `order_items` | Delivery/handoff variance | Không tạo tracking checkpoint |
-| PolicyAgent | Handoff đã kiểm chứng | Issue, cause, responsibility, refund, actions | Chỉ dùng `EC_POLICY_V2`; unmatched case là lỗi |
-| VerifierAgent | Candidate output | Pass hoặc exception | Không ghi output không hợp lệ |
+| Coordinator | Case input và handoff | Output candidate | Không tự tạo fact |
+| CustomerAgent | Orders, customers | Customer ID, tối đa 5 related orders | Không đưa lịch sử vào affected entities |
+| OrderProductAgent | Items, products | Item/seller IDs và product context | Chỉ dùng ID tồn tại trong CSV |
+| PaymentAgent | Items, payments | Tổng tiền và trạng thái đối soát | Dùng `Decimal`, tolerance 0.10 BRL |
+| DeliveryAgent | Orders, items | Delivery/handoff variance | Không tạo tracking checkpoint |
+| PolicyAgent | Sáu condition flags đã kiểm chứng | JSON primary classification | Model không đọc file và không ghi output |
+| Policy catalog | Primary và facts | Cause, parties, refund, secondary, actions | Lookup khai báo; không phân loại bằng nhánh `if/else` |
+| VerifierAgent | Candidate và source lookup | Pass hoặc lỗi | Không sửa quyết định để che lỗi model |
 
-Các handoff là object Python có cấu trúc và JSON-serializable. Thứ tự mảng được giữ theo thứ tự dòng nguồn; các giới hạn 5/3/20 được áp dụng ở biên output.
+## 4. Model và API
 
-## 4. Luồng dữ liệu
+- Provider: Groq, dùng free API tier.
+- Model: `llama-3.1-8b-instant`, đúng 8B parameters và không vượt giới hạn 10B.
+- Model name nằm trong `src/dispute_resolution/ai_policy.py`, không nằm trong `.env`.
+- `.env` chỉ chứa `GROQ_API_KEY` và đã được `.gitignore` loại khỏi Git.
+- JSON Object Mode, temperature `0`, seed cố định và contract chỉ có một trường `primary` để model nhỏ hoạt động ổn định.
+- Khoảng nghỉ 7 giây giữa các request để phù hợp hạn mức token/phút của free tier; lỗi 429/network được retry tối đa 3 lần.
+- Client chỉ dùng Python standard library, không cần cài SDK ngoài.
 
-1. Preflight kiểm tra đủ 9 CSV, 50 input, tên `case_id`, policy version và scope flags.
-2. Loader stream từng CSV bằng `utf-8-sig`, tạo lookup theo khóa join để tránh quét lại file cho từng case.
-3. Coordinator gọi các specialist agent và chuyển handoff cho PolicyAgent.
-4. PolicyAgent áp dụng 6 primary issue theo thứ tự đề bài, sau đó thêm secondary issues và actions theo đúng thứ tự.
-5. VerifierAgent kiểm tra schema đầy đủ, type, enum, rounding, null triplet, giới hạn, root-cause mapping, evidence format và quan hệ refund/status.
-6. CLI ghi 50 JSON và thay mới `logging/trace.jsonl`.
-7. Lệnh `verify` tái tính 50 case, so sánh output đã lưu, đồng thời đối chiếu entity/context/policy/refund/evidence trực tiếp với source data.
-8. Lệnh `package` tạo `output.zip` ở root với đúng 50 JSON, tên entry từ `output/EC_001.json` đến `output/EC_050.json` và không có file phụ.
+## 5. Luồng chạy và tính toàn vẹn
 
-## 5. Runtime và tái lập
-
-- Model: `deterministic_ec_policy_v2`.
-- Parameter size: 0; không dùng language model hay API provider.
-- Framework: custom multi-agent rule engine bằng Python standard library.
-- Runtime đã kiểm tra: Python 3.11.5 trên Windows.
-- Model name được khai báo bằng hằng `MODEL_NAME` trong source và lặp lại trong metadata/trace.
-- `.env` bị Git ignore; project không cần API key để chạy.
+1. `preflight` kiểm tra đủ 9 CSV và 50 input hợp lệ.
+2. CSV được nạp một lần thành lookup; tiền dùng `Decimal`, timestamp giữ định dạng nguồn.
+3. Bốn specialist tạo facts có cấu trúc.
+4. PolicyAgent gửi sáu condition flags theo đúng precedence tới model 8B và nhận primary issue.
+5. Policy catalog dựng các trường liên quan từ primary và facts; không dùng chuỗi `if/else` quyết định case.
+6. Verifier kiểm schema, enum, ordering, entities, context, policy precedence, refund và evidence.
+7. Chỉ khi cả 50 case pass, output, trace và metadata mới được thay thế. Lỗi giữa batch không phá bộ output cũ.
+8. `verify` kiểm lại file đã lưu mà không gọi API lần hai.
+9. `package` tạo `output.zip` với đúng `output/EC_001.json` đến `output/EC_050.json`, không kèm source, `.env`, trace hay metadata.
 
 ## 6. Lệnh vận hành
 
 ```powershell
+Copy-Item .env.example .env
+# Mở .env và điền GROQ_API_KEY
 $env:PYTHONPATH='src'
 python -m unittest discover -s tests -v
 python -m dispute_resolution.cli preflight
@@ -90,4 +87,4 @@ python -m dispute_resolution.cli verify
 python -m dispute_resolution.cli package
 ```
 
-`run` và `package` là deterministic: cùng source data và source code sẽ tạo cùng JSON và cùng SHA-256 cho `output.zip`.
+`run` thực hiện 50 model calls thật. `verify` và `package` không tiêu tốn thêm API quota.

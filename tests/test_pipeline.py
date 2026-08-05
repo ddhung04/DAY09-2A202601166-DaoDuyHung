@@ -3,18 +3,41 @@ from __future__ import annotations
 import json
 import unittest
 from collections import Counter
+from copy import deepcopy
 from pathlib import Path
 
 from dispute_resolution.cli import project_root, run_preflight, source_consistency_errors
+from dispute_resolution.ai_policy import AIPolicyAgent
 from dispute_resolution.engine import (
     CaseResolver,
     OlistData,
-    PolicyAgent,
-    PolicyError,
     hours_between,
     load_case,
     validate_output,
 )
+
+
+class RecordedPolicyAgent:
+    """Offline test double populated from the checked output fixtures."""
+
+    def __init__(self, root: Path) -> None:
+        self.decisions = {}
+        for output_path in (root / "output").glob("EC_*.json"):
+            result = json.loads(output_path.read_text(encoding="utf-8"))
+            order_id = result["affected_entities"]["order_ids"][0]
+            self.decisions[order_id] = {
+                "primary": result["case_assessment"]["primary_issue"],
+                "cause": result["root_cause_analysis"]["ranked_causes"][0]["cause_code"],
+                "parties": result["root_cause_analysis"]["responsible_parties"],
+                "refund": result["financial_resolution"]["recommended_refund_brl"],
+                "secondary": result["case_assessment"]["secondary_issues"],
+                "actions": result["resolution_actions"],
+                "case_status": result["case_assessment"]["case_status"],
+                "confidence": result["case_assessment"]["confidence"],
+            }
+
+    def decide(self, order, item_facts, payment, delivery, customer):
+        return deepcopy(self.decisions[order["order_id"]])
 
 
 class PipelineTests(unittest.TestCase):
@@ -22,7 +45,7 @@ class PipelineTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.root = project_root()
         cls.data = OlistData.from_directory(cls.root / "data")
-        cls.resolver = CaseResolver(cls.data)
+        cls.resolver = CaseResolver(cls.data, RecordedPolicyAgent(cls.root))
 
     def test_repository_preflight(self) -> None:
         self.assertEqual(run_preflight(self.root), 0)
@@ -84,24 +107,36 @@ class PipelineTests(unittest.TestCase):
             with (self.root / "output" / name).open(encoding="utf-8") as handle:
                 validate_output(json.load(handle))
 
-    def test_policy_rejects_an_unmatched_case(self) -> None:
-        with self.assertRaises(PolicyError):
-            PolicyAgent.decide(
-                {"order_id": "0" * 32, "order_status": "delivered"},
-                {"multi_item": False, "multi_seller": False, "multiple_categories": False},
-                {
-                    "payment_total_brl": 10.0,
-                    "freight_total_brl": 1.0,
-                    "split_payment": False,
-                    "reconciled": False,
-                },
-                {
-                    "late_delivery": False,
-                    "late_handoff_seller_ids": [],
-                    "delivery_variance_hours": -1.0,
-                },
-                {"related_order_ids": []},
-            )
+    def test_ai_policy_agent_uses_model_json(self) -> None:
+        class FakeClient:
+            last_metadata = {"provider": "fake", "model": "fake-8b"}
+
+            def generate(self, facts):
+                self.facts = facts
+                return {"primary": "late_delivery_seller"}
+
+        client = FakeClient()
+        agent = AIPolicyAgent(client)
+        decision = agent.decide(
+            {"order_id": "0" * 32, "order_status": "delivered"},
+            {"multi_item": False, "multi_seller": False, "multiple_categories": False},
+            {
+                "payment_total_brl": 212.27,
+                "freight_total_brl": 18.27,
+                "split_payment": True,
+                "reconciled": True,
+            },
+            {
+                "late_delivery": True,
+                "late_handoff_seller_ids": ["a" * 32],
+                "delivery_variance_hours": 87.39,
+            },
+            {"related_order_ids": []},
+        )
+        self.assertEqual(decision["primary"], "late_delivery_seller")
+        self.assertTrue(client.facts["primary_conditions"]["late_delivery_seller"])
+        self.assertEqual(decision["refund"], 18.27)
+        self.assertEqual(decision["secondary"], ["split_payment"])
 
 
 if __name__ == "__main__":

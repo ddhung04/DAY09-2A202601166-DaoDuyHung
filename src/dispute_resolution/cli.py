@@ -1,14 +1,22 @@
-"""Command-line entry point for validation and deterministic batch resolution."""
+"""Command-line entry point for the AI-backed dispute-resolution pipeline."""
 
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+import platform
 from pathlib import Path
 from typing import Any
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
+from dispute_resolution.ai_policy import (
+    AIConfigurationError,
+    AIResponseError,
+    MODEL_PARAMETER_SIZE,
+    MODEL_PROVIDER,
+    build_policy_agent,
+)
 from dispute_resolution.engine import (
     MODEL_NAME,
     POLICY_VERSION,
@@ -17,6 +25,7 @@ from dispute_resolution.engine import (
     OlistData,
     load_case,
     stable_unique,
+    validate_output,
 )
 
 
@@ -87,21 +96,34 @@ def run_preflight(root: Path) -> int:
 
 
 def run_batch(root: Path) -> int:
-    """Resolve all assignment cases, replacing the latest outputs and trace."""
+    """Resolve all cases with AI, then atomically replace outputs and audit files."""
     if run_preflight(root) != 0:
         return 1
-    resolver = CaseResolver(OlistData.from_directory(root / "data"))
+    data = OlistData.from_directory(root / "data")
+    resolver = CaseResolver(data, build_policy_agent(root))
     output_dir = root / "output"
     output_dir.mkdir(exist_ok=True)
-    trace_path = root / "logging" / "trace.jsonl"
-    trace_events = []
+    trace_events: list[dict[str, Any]] = []
+    pending_outputs: list[tuple[Path, str]] = []
+    token_usage = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
     for number in range(1, 51):
         case_path = root / "input" / f"EC_{number:03d}.json"
         case = load_case(case_path)
         result = resolver.resolve(case)
+        semantic_errors = source_consistency_errors(result, case, data)
+        if semantic_errors:
+            raise RuntimeError(
+                f"AI policy decision failed verification for {case['case_id']}: {semantic_errors}"
+            )
         target = output_dir / case_path.name
         serialized = json.dumps(result, ensure_ascii=False, indent=2) + "\n"
-        target.write_text(serialized, encoding="utf-8")
+        pending_outputs.append((target, serialized))
+        model_call = resolver.policy_agent.trace_metadata()
+        usage = model_call.get("usage", {})
+        for key in token_usage:
+            value = usage.get(key, 0)
+            if isinstance(value, int):
+                token_usage[key] += value
         common = {"case_id": case["case_id"], "model": MODEL_NAME}
         trace_events.extend(
             [
@@ -153,10 +175,12 @@ def run_batch(root: Path) -> int:
                     "sequence": 6,
                     "agent": "policy",
                     "event": "decision",
+                    "provider": MODEL_PROVIDER,
                     "primary_issue": result["case_assessment"]["primary_issue"],
                     "refund_brl": result["financial_resolution"][
                         "recommended_refund_brl"
                     ],
+                    "model_call": model_call,
                 },
                 {
                     **common,
@@ -167,8 +191,55 @@ def run_batch(root: Path) -> int:
                 },
             ]
         )
+    # Do not damage a previously valid submission if an API call or verification
+    # fails midway: persistent files are only replaced after all 50 cases pass.
+    for target, serialized in pending_outputs:
+        temporary = target.with_suffix(".json.tmp")
+        temporary.write_text(serialized, encoding="utf-8")
+        temporary.replace(target)
+
     trace_content = "".join(json.dumps(event) + "\n" for event in trace_events)
-    trace_path.write_text(trace_content, encoding="utf-8")
+    for trace_path in (root / "trace.jsonl", root / "logging" / "trace.jsonl"):
+        trace_path.parent.mkdir(exist_ok=True)
+        temporary = trace_path.with_suffix(".jsonl.tmp")
+        temporary.write_text(trace_content, encoding="utf-8")
+        temporary.replace(trace_path)
+
+    metadata = {
+        "model": MODEL_NAME,
+        "provider": MODEL_PROVIDER,
+        "parameter_size": MODEL_PARAMETER_SIZE,
+        "parameter_size_unit": "parameters",
+        "uses_language_model": True,
+        "framework": "custom Python hybrid multi-agent pipeline",
+        "runtime": f"Python {platform.python_version()} on {platform.system()}",
+        "policy_version": POLICY_VERSION,
+        "api_key_env": "GROQ_API_KEY",
+        "model_name_location": "src/dispute_resolution/ai_policy.py",
+        "agents": [
+            "coordinator",
+            "customer",
+            "order_product",
+            "payment",
+            "delivery",
+            "policy_ai",
+            "verifier",
+        ],
+        "case_count": 50,
+        "model_call_count": 50,
+        "token_usage": token_usage,
+        "trace_event_count": len(trace_events),
+        "trace_path": "trace.jsonl",
+        "output_archive": "output.zip",
+        "run_status": "completed",
+        "secrets_in_metadata": False,
+    }
+    metadata_content = json.dumps(metadata, ensure_ascii=False, indent=2) + "\n"
+    for metadata_path in (root / "metadata.json", root / "logging" / "metadata.json"):
+        metadata_path.parent.mkdir(exist_ok=True)
+        temporary = metadata_path.with_suffix(".json.tmp")
+        temporary.write_text(metadata_content, encoding="utf-8")
+        temporary.replace(metadata_path)
     print(f"Resolved and validated {len(trace_events) // 7} cases.")
     return 0
 
@@ -226,7 +297,7 @@ def source_consistency_errors(
     variance = delivery["delivery_variance_hours"]
     late = variance is not None and variance > 0
     split = len(payments) >= 2
-    primary_condition = {
+    primary_conditions = {
         "canceled_order_paid": (
             order["order_status"] == "canceled" and payment["payment_total_brl"] > 0
         ),
@@ -239,9 +310,15 @@ def source_consistency_errors(
         "unsupported_late_claim": (
             variance is not None and variance <= 0 and payment["reconciled"] is True
         ),
-    }[primary]
-    if not primary_condition:
-        errors.append("primary issue predicate is not satisfied")
+    }
+    expected_primary = next(
+        (issue for issue, condition in primary_conditions.items() if condition),
+        None,
+    )
+    if primary != expected_primary:
+        errors.append(
+            f"primary issue violates policy precedence; expected {expected_primary}"
+        )
 
     expected_secondary = []
     if len(items) >= 2:
@@ -281,8 +358,8 @@ def source_consistency_errors(
 
 
 def verify_batch(root: Path) -> int:
-    """Recompute every case and prove stored outputs match the current policy pipeline."""
-    resolver = CaseResolver(OlistData.from_directory(root / "data"))
+    """Validate stored AI outputs against source data without making new model calls."""
+    data = OlistData.from_directory(root / "data")
     expected_names = {f"EC_{number:03d}.json" for number in range(1, 51)}
     output_dir = root / "output"
     actual_names = {path.name for path in output_dir.iterdir() if path.is_file()}
@@ -293,17 +370,20 @@ def verify_batch(root: Path) -> int:
         return 1
     for name in sorted(expected_names):
         case = load_case(root / "input" / name)
-        expected = resolver.resolve(case)
         with (root / "output" / name).open(encoding="utf-8") as handle:
             actual = json.load(handle)
-        if actual != expected:
-            print(f"Verification failed: output/{name} does not match recomputed result.")
+        try:
+            validate_output(actual)
+        except ValueError as error:
+            print(f"Verification failed: output/{name}: {error}")
             return 1
-        semantic_errors = source_consistency_errors(actual, case, resolver.data)
+        semantic_errors = source_consistency_errors(actual, case, data)
         if semantic_errors:
             print(f"Verification failed: output/{name}: {semantic_errors}")
             return 1
-    trace_path = root / "logging" / "trace.jsonl"
+    trace_path = root / "trace.jsonl"
+    if not trace_path.is_file():
+        trace_path = root / "logging" / "trace.jsonl"
     try:
         trace_lines = trace_path.read_text(encoding="utf-8").splitlines()
         trace_events = [json.loads(line) for line in trace_lines]
@@ -378,13 +458,17 @@ def main() -> int:
     )
     parser.add_argument("--root", type=Path, default=project_root(), help="repository root")
     args = parser.parse_args()
-    if args.command == "preflight":
-        return run_preflight(args.root)
-    if args.command == "run":
-        return run_batch(args.root)
-    if args.command == "verify":
-        return verify_batch(args.root)
-    return package_submission(args.root)
+    try:
+        if args.command == "preflight":
+            return run_preflight(args.root)
+        if args.command == "run":
+            return run_batch(args.root)
+        if args.command == "verify":
+            return verify_batch(args.root)
+        return package_submission(args.root)
+    except (AIConfigurationError, AIResponseError, RuntimeError, ValueError) as error:
+        print(f"Command failed: {error}")
+        return 1
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-"""Deterministic multi-agent pipeline for the EC_POLICY_V2 assignment."""
+"""Hybrid multi-agent pipeline for the EC_POLICY_V2 assignment."""
 
 from __future__ import annotations
 
@@ -10,11 +10,10 @@ from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Protocol
 
+from dispute_resolution.ai_policy import MODEL_NAME, MODEL_PARAMETER_SIZE
 
-MODEL_NAME = "deterministic_ec_policy_v2"
-MODEL_PARAMETER_SIZE = "N/A (rule engine, no language model)"
 POLICY_VERSION = "EC_POLICY_V2"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 ZERO = Decimal("0.00")
@@ -63,8 +62,17 @@ EVIDENCE_PATTERN = re.compile(
 )
 
 
-class PolicyError(ValueError):
-    """Raised when a case does not satisfy any explicit EC_POLICY_V2 branch."""
+class PolicyDecisionAgent(Protocol):
+    """Contract implemented by the production AI agent and test doubles."""
+
+    def decide(
+        self,
+        order: dict[str, str],
+        item_facts: dict[str, Any],
+        payment: dict[str, Any],
+        delivery: dict[str, Any],
+        customer: dict[str, Any],
+    ) -> dict[str, Any]: ...
 
 
 def parse_date(value: str | None) -> datetime | None:
@@ -279,92 +287,6 @@ class DeliveryAgent:
         }
 
 
-class PolicyAgent:
-    """Strict EC_POLICY_V2 decision specialist; unmatched cases are rejected."""
-
-    @staticmethod
-    def decide(
-        order: dict[str, str],
-        item_facts: dict[str, Any],
-        payment: dict[str, Any],
-        delivery: dict[str, Any],
-        customer: dict[str, Any],
-    ) -> dict[str, Any]:
-        payment_total = payment["payment_total_brl"]
-        if order["order_status"] == "canceled" and payment_total > 0:
-            primary = "canceled_order_paid"
-            parties = [{"party_type": "platform", "party_id": "OLIST_PLATFORM"}]
-            refund = payment_total
-        elif order["order_status"] == "unavailable" and payment_total > 0:
-            primary = "unavailable_order_paid"
-            parties = [{"party_type": "platform", "party_id": "OLIST_PLATFORM"}]
-            refund = payment_total
-        elif delivery["late_delivery"] and delivery["late_handoff_seller_ids"]:
-            primary = "late_delivery_seller"
-            parties = [
-                {"party_type": "seller", "party_id": seller_id}
-                for seller_id in delivery["late_handoff_seller_ids"][:3]
-            ]
-            refund = payment["freight_total_brl"]
-        elif delivery["late_delivery"]:
-            primary = "late_delivery_logistics"
-            parties = [
-                {
-                    "party_type": "logistics_provider",
-                    "party_id": "LOGISTICS_PROVIDER",
-                }
-            ]
-            refund = payment["freight_total_brl"]
-        elif payment["split_payment"] and payment["reconciled"] is True:
-            primary = "valid_split_payment"
-            parties = []
-            refund = 0.0
-        elif (
-            delivery["delivery_variance_hours"] is not None
-            and delivery["delivery_variance_hours"] <= 0
-            and payment["reconciled"] is True
-        ):
-            primary = "unsupported_late_claim"
-            parties = []
-            refund = 0.0
-        else:
-            raise PolicyError(
-                f"order {order['order_id']} does not match an EC_POLICY_V2 primary issue"
-            )
-
-        secondary = []
-        conditions = {
-            "multi_item_order": item_facts["multi_item"],
-            "multi_seller_order": item_facts["multi_seller"],
-            "split_payment": payment["split_payment"],
-            "repeat_customer": bool(customer["related_order_ids"]),
-            "multiple_categories": item_facts["multiple_categories"],
-        }
-        for issue in SECONDARY_ORDER:
-            if conditions[issue]:
-                secondary.append(issue)
-
-        actions = [PRIMARY_ACTIONS[primary]]
-        if primary == "late_delivery_seller":
-            actions.append("review_seller_handoff")
-        elif primary == "late_delivery_logistics":
-            actions.append("review_carrier_delay")
-        if primary in {"canceled_order_paid", "unavailable_order_paid"}:
-            actions.append("verify_refund_completion")
-        if item_facts["multi_seller"]:
-            actions.append("coordinate_multi_seller_case")
-        if payment["split_payment"] and primary != "valid_split_payment":
-            actions.append("verify_payment_allocation")
-        return {
-            "primary": primary,
-            "cause": PRIMARY_CAUSES[primary],
-            "parties": parties,
-            "refund": refund,
-            "secondary": secondary,
-            "actions": actions[:5],
-        }
-
-
 class VerifierAgent:
     """Hard schema and cross-field gate executed before any output is written."""
 
@@ -376,13 +298,13 @@ class VerifierAgent:
 class CaseResolver:
     """Coordinator that calls specialist agents and aggregates their handoffs."""
 
-    def __init__(self, data: OlistData) -> None:
+    def __init__(self, data: OlistData, policy_agent: PolicyDecisionAgent) -> None:
         self.data = data
         self.customer_agent = CustomerAgent(data)
         self.order_product_agent = OrderProductAgent(data)
         self.payment_agent = PaymentAgent()
         self.delivery_agent = DeliveryAgent()
-        self.policy_agent = PolicyAgent()
+        self.policy_agent = policy_agent
         self.verifier_agent = VerifierAgent()
 
     def resolve(self, case: dict[str, Any]) -> dict[str, Any]:
@@ -457,8 +379,8 @@ class CaseResolver:
             "case_assessment": {
                 "primary_issue": policy["primary"],
                 "secondary_issues": policy["secondary"],
-                "case_status": "action_required" if policy["refund"] > 0 else "no_action",
-                "confidence": 1.0,
+                "case_status": policy["case_status"],
+                "confidence": policy["confidence"],
             },
             "affected_entities": {
                 "order_ids": [order_id],

@@ -7,77 +7,72 @@
 | Họ và tên | Đào Duy Hưng |
 | MSSV | 2A202601166 |
 | Khóa/Lớp | K4 |
-| Vai trò chính | Thiết kế và triển khai pipeline điều phối, policy và verifier |
+| Vai trò | Thiết kế pipeline, Policy AI, verifier và bộ đóng gói |
 
-## 2. Phạm vi công việc sở hữu
+## 2. Phạm vi thực hiện
 
-| Module/deliverable | File phụ trách | Input | Output | Trạng thái |
-| --- | --- | --- | --- | --- |
-| Điều phối và xử lý case | `src/dispute_resolution/engine.py` | JSON case, CSV Olist | JSON theo output schema | Hoàn thành |
-| CLI, batch run và trace | `src/dispute_resolution/cli.py` | 50 input cases | 50 output JSON, trace JSONL | Hoàn thành |
-| Kiểm tra đầu vào/đầu ra | `cli.py`, `tests/test_pipeline.py` | Source data và candidate output | Báo lỗi hoặc xác nhận hợp lệ | Hoàn thành |
-| Kiến trúc và metadata | `architecture.md`, `logging/metadata.json` | Quy định đề bài | Tài liệu và metadata runtime | Hoàn thành |
+| Hạng mục | File chính | Kết quả |
+| --- | --- | --- |
+| Data agents và coordinator | `src/dispute_resolution/engine.py` | Join CSV, đối soát tiền/giao hàng, compose đúng schema |
+| Policy AI | `src/dispute_resolution/ai_policy.py` | Model 8B chọn primary; policy catalog dựng output không dùng nhánh phân loại `if/else` |
+| Batch, trace, metadata, ZIP | `src/dispute_resolution/cli.py` | Chạy 50 case, audit 350 event và ZIP đúng internal path |
+| Kiểm thử | `tests/test_pipeline.py` | Test offline bằng recorded decision, không tốn quota |
+| Tài liệu | `architecture.md`, báo cáo này | Mô tả vai trò, quyền và handoff end-to-end |
 
-## 3. Kết quả bàn giao
+## 3. Giải pháp kỹ thuật
 
-- Preflight kiểm tra đủ 9 CSV; pipeline nạp các bảng cần thiết và join theo `order_id`, `customer_id`, `product_id` và `seller_id`.
-- 50 file `output/EC_001.json` đến `output/EC_050.json` được tạo bằng `EC_POLICY_V2`.
-- `logging/trace.jsonl` có 350 sự kiện: 7 handoff/decision thực thi cho mỗi case.
-- Lệnh `python -m dispute_resolution.cli verify` tính lại toàn bộ case và so sánh output đã lưu với kết quả mới.
+`CaseResolver` điều phối bốn agent chuyên trách. CustomerAgent tra danh tính và lịch sử khách; OrderProductAgent xác định item, seller và category; PaymentAgent tính tiền bằng `Decimal`; DeliveryAgent tính chênh lệch giờ giao và seller handoff. Các facts đã kiểm chứng được gửi sang PolicyAgent.
 
-## 4. Giải thích kỹ thuật
+PolicyAgent sử dụng `llama-3.1-8b-instant` qua Groq. Đây là model 8B, đáp ứng giới hạn mỗi agent không quá 10B. Model nhận sáu condition flags đã kiểm chứng theo đúng precedence và trả JSON primary classification. Policy catalog dạng dữ liệu ánh xạ primary sang cause, party, refund và actions; không có chuỗi `if/else` hardcode để chọn case. Model không được phép tạo entity ID, timestamp hay payment amount; các trường đó do specialist lấy trực tiếp từ CSV.
 
-### Vấn đề giải quyết
+Verifier có hai lớp:
 
-Mỗi khiếu nại chỉ cung cấp `claimed_order_id`; hệ thống phải đối soát độc lập tình trạng order, item, seller, payment, khách hàng và thời gian giao để kết luận có hoàn tiền hay không. Các kết luận không được dựa trên thông tin không tồn tại trong dữ liệu Olist.
+1. Schema/cross-field validation kiểm type, enum, array limit, root-cause mapping, evidence format và refund/status.
+2. Source consistency audit đối chiếu entity, customer/product context, delivery/payment facts và policy predicate trực tiếp với CSV.
 
-### Cách triển khai
+Các check này là guardrail, không thay AI đưa ra primary decision. Nếu AI chọn sai precedence, batch dừng thay vì âm thầm đổi nhãn.
 
-`CaseResolver` đóng vai trò coordinator. Các hàm `customer_agent`, `order_product_agent`, `payment_agent` và `delivery_agent` tạo các handoff dữ liệu có cấu trúc. `policy_agent` áp dụng thứ tự ưu tiên của `EC_POLICY_V2`; `validate_output` chặn output vượt giới hạn, confidence sai hoặc evidence ID sai prefix. Mọi phép tính tiền dùng `Decimal`; variance giao hàng dùng timestamp CSV và được làm tròn hai chữ số.
+## 4. Tối ưu cho free API
 
-| Thành phần | Contract |
-| --- | --- |
-| Input | Một JSON case hợp lệ với `claimed_order_id` và `EC_POLICY_V2` |
-| Output | Một JSON theo schema đề bài, không chứa dữ liệu suy diễn |
-| Phụ thuộc | CSV trong `data/` và JSON trong `input/` |
-| Nơi dùng output | `output/`, trace và bước đóng gói nộp bài |
-| Lỗi xử lý | Thiếu dataset/case, JSON sai, order/customer không tồn tại, vượt schema limit |
+- Không thêm dependency runtime; gọi HTTPS bằng Python standard library.
+- Chỉ 1 model call/case, tổng 50 calls.
+- Prompt chỉ gửi facts cần thiết, không gửi toàn bộ CSV.
+- Temperature 0, JSON Object Mode và contract một trường giúp model 8B ổn định.
+- Giãn request 7 giây để tránh vượt free-tier token rate; tự retry lỗi 429/network.
+- Output chỉ được thay sau khi đủ 50 case pass, tránh làm hỏng bộ kết quả cũ khi hết quota.
+- `verify`, unit test và `package` không gọi model.
 
-### Cách xác minh
+## 5. Tuân thủ yêu cầu nộp bài
+
+- Model name khai báo trong source và `metadata.json`, không đặt trong `.env`.
+- `.env` chỉ chứa API key và bị ignore; trace/metadata không chứa secret.
+- `output.zip` chỉ chứa 50 entry từ `output/EC_001.json` đến `output/EC_050.json`.
+- Source, `.env`, trace và metadata không nằm trong ZIP.
+- Trace lượt mới nhất được ghi đè, không append.
+- Không tự commit hoặc push; chỉ thực hiện khi chủ repo yêu cầu rõ.
+
+## 6. Sự cố và bài học
+
+ZIP từng bị từ chối vì JSON nằm ở root archive thay vì dưới prefix `output/`. Packager hiện tạo đúng đường dẫn nội bộ và kiểm lại toàn bộ danh sách entry sau khi nén. Bài học là hard gate cần được kiểm ở artifact cuối, không chỉ ở folder nguồn.
+
+Thiết kế ban đầu dùng rule engine để bảo đảm đúng dữ liệu, nhưng không đáp ứng mong muốn dùng AI thật. Phiên bản hiện tại giữ các specialist và verifier xác định, đồng thời thay riêng logic quyết định policy bằng model 8B. Cách này vừa chứng minh model call thật qua trace, vừa giảm rủi ro hallucination.
+
+## 7. Cách xác minh
 
 ```powershell
 $env:PYTHONPATH='src'
+python -m unittest discover -s tests -v
 python -m dispute_resolution.cli preflight
 python -m dispute_resolution.cli run
 python -m dispute_resolution.cli verify
 python -m dispute_resolution.cli package
 ```
 
-Kết quả mong đợi và đã xác minh: 9 dataset, 50 input, 50 output hợp lệ và 350 sự kiện trace.
+## 8. Kết quả lượt chạy thật
 
-## 5. Quyết định kỹ thuật quan trọng
-
-- **Bối cảnh:** Các trường thời gian và số tiền phải khớp tuyệt đối với CSV; LLM có thể tạo bằng chứng không tồn tại.
-- **Phương án cân nhắc:** Dùng LLM cho toàn bộ suy luận; hoặc dùng rule engine xác định, LLM chỉ để diễn giải.
-- **Phương án chọn:** Rule engine Python cho toàn bộ join, tính toán, policy, ID và output.
-- **Lý do:** Tái lập được kết quả, tránh hallucination và đảm bảo quy tắc ưu tiên được áp dụng chính xác.
-- **Bằng chứng:** Lệnh `verify` tính lại và so sánh cấu trúc dữ liệu của cả 50 output.
-
-## 6. Lỗi đã xử lý
-
-- **Triệu chứng:** File ZIP ban đầu bị hệ thống nộp bài từ chối dù có đủ 50 JSON.
-- **Nguyên nhân gốc:** Các entry nằm ở gốc ZIP thay vì có đường dẫn `output/EC_NNN.json`.
-- **Cách xử lý:** Packager ghi đúng tiền tố `output/` cho toàn bộ 50 entry.
-- **Xác minh:** Danh sách ZIP hiện chạy liên tục từ `output/EC_001.json` đến `output/EC_050.json` và không có entry lạ.
-- **Bài học:** Cần kiểm tra cả đường dẫn nội bộ của archive, không chỉ số lượng file.
-
-## 7. Hiểu biết end-to-end
-
-Case JSON đi vào coordinator, sau đó các agent chuyên trách truy xuất dữ liệu chỉ đọc và gửi handoff có cấu trúc. Policy agent chọn primary issue theo thứ tự ưu tiên, tạo refund/actions; verifier kiểm tra giới hạn mảng, evidence, confidence và null handling trước khi ghi output. Trace lưu thứ tự coordinator → customer → order-product → payment → delivery → policy → verifier cho từng case. Chất lượng được đo bằng khả năng tái tính 50 output từ dữ liệu gốc và xác minh không có lệch kết quả.
-
-## 8. Cam kết
-
-- [x] Nội dung phản ánh đúng phần việc đã thực hiện.
-- [x] Có thể giải thích luồng end-to-end.
-- [x] Chỉ ghi kết quả đã được chạy và xác minh.
-- [x] Báo cáo không chứa API key, token hoặc secret.
+- 50/50 model calls hoàn tất và có response ID trong trace.
+- Tổng usage: 9.300 prompt tokens, 592 completion tokens, 9.892 tokens.
+- `trace.jsonl` có đúng 350 event của 50 case; file cũ đã được ghi đè.
+- 7/7 unit tests pass; lệnh `verify` xác nhận 50 output khớp source và policy.
+- `output.zip` có đúng 50 entry từ `output/EC_001.json` đến `output/EC_050.json`, không có file lạ.
+- SHA-256 của ZIP: `f7ca9fb85af17fd241d60a66237ae6c4f6ea9de6c2e74a295fa1f268da129fbd`.

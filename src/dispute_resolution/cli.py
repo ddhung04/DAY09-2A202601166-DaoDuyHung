@@ -347,13 +347,18 @@ def package_submission(root: Path) -> int:
         return 1
     target = root / "output.zip"
     temporary = root / "output.zip.tmp"
-    expected_names = [f"EC_{number:03d}.json" for number in range(1, 51)]
+    expected_files = [f"EC_{number:03d}.json" for number in range(1, 51)]
+    expected_names = [f"output/{name}" for name in expected_files]
     with ZipFile(temporary, "w", compression=ZIP_DEFLATED, compresslevel=9) as archive:
-        for name in expected_names:
-            info = ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
+        for file_name, archive_name in zip(expected_files, expected_names, strict=True):
+            info = ZipInfo(archive_name, date_time=(1980, 1, 1, 0, 0, 0))
             info.compress_type = ZIP_DEFLATED
             info.external_attr = 0o100644 << 16
-            archive.writestr(info, (root / "output" / name).read_bytes(), compresslevel=9)
+            archive.writestr(
+                info,
+                (root / "output" / file_name).read_bytes(),
+                compresslevel=9,
+            )
     temporary.replace(target)
     with ZipFile(target) as archive:
         if archive.namelist() != expected_names:

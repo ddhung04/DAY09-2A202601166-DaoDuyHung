@@ -68,7 +68,7 @@ Các handoff là object Python có cấu trúc và JSON-serializable. Thứ tự
 5. VerifierAgent kiểm tra schema đầy đủ, type, enum, rounding, null triplet, giới hạn, root-cause mapping, evidence format và quan hệ refund/status.
 6. CLI ghi 50 JSON và thay mới `logging/trace.jsonl`.
 7. Lệnh `verify` tái tính 50 case, so sánh output đã lưu, đồng thời đối chiếu entity/context/policy/refund/evidence trực tiếp với source data.
-8. Lệnh `package` tạo `output.zip` ở root với đúng 50 JSON, tên entry từ `EC_001.json` đến `EC_050.json` và không có thư mục/file phụ.
+8. Lệnh `package` tạo `output.zip` ở root với đúng 50 JSON, tên entry từ `output/EC_001.json` đến `output/EC_050.json` và không có file phụ.
 
 ## 5. Runtime và tái lập
 

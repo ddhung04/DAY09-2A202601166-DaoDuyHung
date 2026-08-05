@@ -1,0 +1,1 @@
+# No third-party runtime dependencies. Development tools are declared in pyproject.toml.

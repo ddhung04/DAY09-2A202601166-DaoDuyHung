@@ -1,0 +1,23 @@
+{
+  "model": "deterministic_ec_policy_v2",
+  "parameter_size": 0,
+  "parameter_size_unit": "parameters",
+  "uses_language_model": false,
+  "framework": "custom Python multi-agent rule engine",
+  "runtime": "Python 3.11.5 on Windows",
+  "policy_version": "EC_POLICY_V2",
+  "agents": [
+    "coordinator",
+    "customer",
+    "order_product",
+    "payment",
+    "delivery",
+    "policy",
+    "verifier"
+  ],
+  "case_count": 50,
+  "trace_event_count": 350,
+  "trace_path": "logging/trace.jsonl",
+  "output_archive": "output.zip",
+  "secrets_used": false
+}

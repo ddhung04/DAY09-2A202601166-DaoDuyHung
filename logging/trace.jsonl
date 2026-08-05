@@ -1,0 +1,350 @@
+{"case_id": "EC_001", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "9b75cdaf2d85857ef023980e15d01546"}
+{"case_id": "EC_001", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_001", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 1}
+{"case_id": "EC_001", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_001", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": -166.52, "late_seller_count": 0}
+{"case_id": "EC_001", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "unsupported_late_claim", "refund_brl": 0.0}
+{"case_id": "EC_001", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_001.json"}
+{"case_id": "EC_002", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "eb09635680fadffb33358e40b05c9029"}
+{"case_id": "EC_002", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_002", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 1, "seller_count": 1}
+{"case_id": "EC_002", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_002", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": 87.39, "late_seller_count": 1}
+{"case_id": "EC_002", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "late_delivery_seller", "refund_brl": 18.27}
+{"case_id": "EC_002", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_002.json"}
+{"case_id": "EC_003", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "6c1798a95735e69db81fe92f8c40bdb4"}
+{"case_id": "EC_003", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_003", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 1}
+{"case_id": "EC_003", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_003", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": 210.5, "late_seller_count": 0}
+{"case_id": "EC_003", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "late_delivery_logistics", "refund_brl": 32.22}
+{"case_id": "EC_003", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_003.json"}
+{"case_id": "EC_004", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "5d9c5817e278892b7498d90bfa28ade8"}
+{"case_id": "EC_004", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_004", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 1}
+{"case_id": "EC_004", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_004", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": null, "late_seller_count": 0}
+{"case_id": "EC_004", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "canceled_order_paid", "refund_brl": 290.16}
+{"case_id": "EC_004", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_004.json"}
+{"case_id": "EC_005", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "3a20bcc250e5404ca717dfa90e8a9c05"}
+{"case_id": "EC_005", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_005", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 2}
+{"case_id": "EC_005", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_005", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": 118.42, "late_seller_count": 0}
+{"case_id": "EC_005", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "late_delivery_logistics", "refund_brl": 32.75}
+{"case_id": "EC_005", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_005.json"}
+{"case_id": "EC_006", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "0e4a4de1d15b6df8d4335fb2db61667a"}
+{"case_id": "EC_006", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_006", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 4, "seller_count": 1}
+{"case_id": "EC_006", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_006", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": 141.48, "late_seller_count": 1}
+{"case_id": "EC_006", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "late_delivery_seller", "refund_brl": 60.4}
+{"case_id": "EC_006", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_006.json"}
+{"case_id": "EC_007", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "cf788ee4258fde5130bb5651bda63918"}
+{"case_id": "EC_007", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_007", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 2}
+{"case_id": "EC_007", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_007", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": 94.42, "late_seller_count": 0}
+{"case_id": "EC_007", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "late_delivery_logistics", "refund_brl": 44.13}
+{"case_id": "EC_007", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_007.json"}
+{"case_id": "EC_008", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "23c312ca9f0242a48a95e5643bee2645"}
+{"case_id": "EC_008", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_008", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 2}
+{"case_id": "EC_008", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_008", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": -73.73, "late_seller_count": 0}
+{"case_id": "EC_008", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "valid_split_payment", "refund_brl": 0.0}
+{"case_id": "EC_008", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_008.json"}
+{"case_id": "EC_009", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "6683aa4f73f7869ec65ebeeef53f700b"}
+{"case_id": "EC_009", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_009", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 5, "seller_count": 1}
+{"case_id": "EC_009", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_009", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": null, "late_seller_count": 0}
+{"case_id": "EC_009", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "canceled_order_paid", "refund_brl": 144.3}
+{"case_id": "EC_009", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_009.json"}
+{"case_id": "EC_010", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "919baca007d9525b6668c18f79a33197"}
+{"case_id": "EC_010", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_010", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 2}
+{"case_id": "EC_010", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_010", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": -587.95, "late_seller_count": 0}
+{"case_id": "EC_010", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "valid_split_payment", "refund_brl": 0.0}
+{"case_id": "EC_010", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_010.json"}
+{"case_id": "EC_011", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "113e41a438f06ffae6d1857e01d60c45"}
+{"case_id": "EC_011", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_011", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 4, "seller_count": 1}
+{"case_id": "EC_011", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_011", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": null, "late_seller_count": 0}
+{"case_id": "EC_011", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "canceled_order_paid", "refund_brl": 127.12}
+{"case_id": "EC_011", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_011.json"}
+{"case_id": "EC_012", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "73628c6d02ed8f6134d9752cd7b83c2a"}
+{"case_id": "EC_012", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_012", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 0, "seller_count": 0}
+{"case_id": "EC_012", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": null}
+{"case_id": "EC_012", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": null, "late_seller_count": 0}
+{"case_id": "EC_012", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "unavailable_order_paid", "refund_brl": 226.23}
+{"case_id": "EC_012", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_012.json"}
+{"case_id": "EC_013", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "97e8d3eb8f48e3610beed991e5f32296"}
+{"case_id": "EC_013", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_013", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 1}
+{"case_id": "EC_013", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_013", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": 115.29, "late_seller_count": 1}
+{"case_id": "EC_013", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "late_delivery_seller", "refund_brl": 48.14}
+{"case_id": "EC_013", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_013.json"}
+{"case_id": "EC_014", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "f938fa004452c776198a593e5fb9056d"}
+{"case_id": "EC_014", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_014", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 3, "seller_count": 1}
+{"case_id": "EC_014", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_014", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": 371.97, "late_seller_count": 0}
+{"case_id": "EC_014", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "late_delivery_logistics", "refund_brl": 50.37}
+{"case_id": "EC_014", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_014.json"}
+{"case_id": "EC_015", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "ccec592b58e122dc2bfc2305152d9603"}
+{"case_id": "EC_015", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_015", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 2}
+{"case_id": "EC_015", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_015", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": -365.46, "late_seller_count": 0}
+{"case_id": "EC_015", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "valid_split_payment", "refund_brl": 0.0}
+{"case_id": "EC_015", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_015.json"}
+{"case_id": "EC_016", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "9c9353e8fd52f68f8442e580b5f2bba6"}
+{"case_id": "EC_016", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_016", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 1, "seller_count": 1}
+{"case_id": "EC_016", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_016", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": 67.65, "late_seller_count": 0}
+{"case_id": "EC_016", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "late_delivery_logistics", "refund_brl": 18.15}
+{"case_id": "EC_016", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_016.json"}
+{"case_id": "EC_017", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "3c5939ce763419f5942f27acffd072e6"}
+{"case_id": "EC_017", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_017", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 3, "seller_count": 1}
+{"case_id": "EC_017", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_017", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": 547.94, "late_seller_count": 0}
+{"case_id": "EC_017", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "late_delivery_logistics", "refund_brl": 48.54}
+{"case_id": "EC_017", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_017.json"}
+{"case_id": "EC_018", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "f396e1280028fa9c8c83111abee5f2e9"}
+{"case_id": "EC_018", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_018", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 2}
+{"case_id": "EC_018", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_018", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": -344.15, "late_seller_count": 0}
+{"case_id": "EC_018", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "unsupported_late_claim", "refund_brl": 0.0}
+{"case_id": "EC_018", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_018.json"}
+{"case_id": "EC_019", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "a4e90af1c84c4455c7c4c65293ae2c78"}
+{"case_id": "EC_019", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 2}
+{"case_id": "EC_019", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 1}
+{"case_id": "EC_019", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_019", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": 303.43, "late_seller_count": 1}
+{"case_id": "EC_019", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "late_delivery_seller", "refund_brl": 23.48}
+{"case_id": "EC_019", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_019.json"}
+{"case_id": "EC_020", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "4f3f48cbedce0c316c688af6fc7e9c56"}
+{"case_id": "EC_020", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_020", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 3, "seller_count": 1}
+{"case_id": "EC_020", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_020", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": 234.76, "late_seller_count": 1}
+{"case_id": "EC_020", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "late_delivery_seller", "refund_brl": 68.64}
+{"case_id": "EC_020", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_020.json"}
+{"case_id": "EC_021", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "cc8778d76e567b45082b7f52bce23095"}
+{"case_id": "EC_021", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_021", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 2}
+{"case_id": "EC_021", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_021", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": -673.72, "late_seller_count": 0}
+{"case_id": "EC_021", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "unsupported_late_claim", "refund_brl": 0.0}
+{"case_id": "EC_021", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_021.json"}
+{"case_id": "EC_022", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "ca0400dec2c292340c373e63b1c2c597"}
+{"case_id": "EC_022", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_022", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 4, "seller_count": 1}
+{"case_id": "EC_022", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_022", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": -30.63, "late_seller_count": 0}
+{"case_id": "EC_022", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "valid_split_payment", "refund_brl": 0.0}
+{"case_id": "EC_022", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_022.json"}
+{"case_id": "EC_023", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "9d0516ad96d793d308cec3c5929ed649"}
+{"case_id": "EC_023", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_023", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 1}
+{"case_id": "EC_023", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_023", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": 475.89, "late_seller_count": 0}
+{"case_id": "EC_023", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "late_delivery_logistics", "refund_brl": 101.0}
+{"case_id": "EC_023", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_023.json"}
+{"case_id": "EC_024", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "6560fb10610771449cb0463c5ba12199"}
+{"case_id": "EC_024", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_024", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 1}
+{"case_id": "EC_024", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_024", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": null, "late_seller_count": 0}
+{"case_id": "EC_024", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "canceled_order_paid", "refund_brl": 333.62}
+{"case_id": "EC_024", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_024.json"}
+{"case_id": "EC_025", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "4cf6a6de996beb9d4b190c7983be98d9"}
+{"case_id": "EC_025", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_025", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 1}
+{"case_id": "EC_025", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_025", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": -342.28, "late_seller_count": 0}
+{"case_id": "EC_025", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "unsupported_late_claim", "refund_brl": 0.0}
+{"case_id": "EC_025", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_025.json"}
+{"case_id": "EC_026", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "9b4fc5c379134e1329bd48641ba285e3"}
+{"case_id": "EC_026", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_026", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 1}
+{"case_id": "EC_026", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_026", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": null, "late_seller_count": 0}
+{"case_id": "EC_026", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "canceled_order_paid", "refund_brl": 670.04}
+{"case_id": "EC_026", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_026.json"}
+{"case_id": "EC_027", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "9a71f055d972d1ebacec9df7376ff1e3"}
+{"case_id": "EC_027", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_027", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 1}
+{"case_id": "EC_027", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_027", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": 378.81, "late_seller_count": 0}
+{"case_id": "EC_027", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "late_delivery_logistics", "refund_brl": 30.38}
+{"case_id": "EC_027", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_027.json"}
+{"case_id": "EC_028", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "1118f05e23d1a8082fa47f8a377de658"}
+{"case_id": "EC_028", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_028", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 1}
+{"case_id": "EC_028", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_028", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": null, "late_seller_count": 0}
+{"case_id": "EC_028", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "canceled_order_paid", "refund_brl": 242.62}
+{"case_id": "EC_028", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_028.json"}
+{"case_id": "EC_029", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "b69321fb7d3000994c5a2b55c4f3cb01"}
+{"case_id": "EC_029", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_029", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 2}
+{"case_id": "EC_029", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_029", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": -291.62, "late_seller_count": 0}
+{"case_id": "EC_029", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "valid_split_payment", "refund_brl": 0.0}
+{"case_id": "EC_029", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_029.json"}
+{"case_id": "EC_030", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "676e40056867189a1b3599f3e646f421"}
+{"case_id": "EC_030", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_030", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 1}
+{"case_id": "EC_030", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_030", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": null, "late_seller_count": 0}
+{"case_id": "EC_030", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "canceled_order_paid", "refund_brl": 81.48}
+{"case_id": "EC_030", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_030.json"}
+{"case_id": "EC_031", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "72fa449394ed9dc9093819f93ca563af"}
+{"case_id": "EC_031", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_031", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 0, "seller_count": 0}
+{"case_id": "EC_031", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": null}
+{"case_id": "EC_031", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": null, "late_seller_count": 0}
+{"case_id": "EC_031", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "unavailable_order_paid", "refund_brl": 138.92}
+{"case_id": "EC_031", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_031.json"}
+{"case_id": "EC_032", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "d3782eb2976abf986175941c51364aab"}
+{"case_id": "EC_032", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_032", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 1}
+{"case_id": "EC_032", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_032", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": 108.31, "late_seller_count": 1}
+{"case_id": "EC_032", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "late_delivery_seller", "refund_brl": 31.64}
+{"case_id": "EC_032", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_032.json"}
+{"case_id": "EC_033", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "edefc0fa09c98cc491e9d2cf95ee4a5f"}
+{"case_id": "EC_033", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_033", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 0, "seller_count": 0}
+{"case_id": "EC_033", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": null}
+{"case_id": "EC_033", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": null, "late_seller_count": 0}
+{"case_id": "EC_033", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "unavailable_order_paid", "refund_brl": 35.96}
+{"case_id": "EC_033", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_033.json"}
+{"case_id": "EC_034", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "b210c676cae65f95f7e08a49d195e1a1"}
+{"case_id": "EC_034", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_034", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 0, "seller_count": 0}
+{"case_id": "EC_034", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": null}
+{"case_id": "EC_034", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": null, "late_seller_count": 0}
+{"case_id": "EC_034", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "unavailable_order_paid", "refund_brl": 85.14}
+{"case_id": "EC_034", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_034.json"}
+{"case_id": "EC_035", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "ae443cb420061bab1f2c5e3ad279fde8"}
+{"case_id": "EC_035", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_035", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 0, "seller_count": 0}
+{"case_id": "EC_035", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": null}
+{"case_id": "EC_035", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": null, "late_seller_count": 0}
+{"case_id": "EC_035", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "unavailable_order_paid", "refund_brl": 132.37}
+{"case_id": "EC_035", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_035.json"}
+{"case_id": "EC_036", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "201797d3f567dc70cc5732ecf055e346"}
+{"case_id": "EC_036", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_036", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 2}
+{"case_id": "EC_036", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_036", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": -367.3, "late_seller_count": 0}
+{"case_id": "EC_036", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "valid_split_payment", "refund_brl": 0.0}
+{"case_id": "EC_036", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_036.json"}
+{"case_id": "EC_037", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "9f5bd892aa4c461b116e5c163f16b40a"}
+{"case_id": "EC_037", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_037", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 1}
+{"case_id": "EC_037", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_037", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": 106.64, "late_seller_count": 0}
+{"case_id": "EC_037", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "late_delivery_logistics", "refund_brl": 24.38}
+{"case_id": "EC_037", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_037.json"}
+{"case_id": "EC_038", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "efcd8852328a37fca811747c09c6fb69"}
+{"case_id": "EC_038", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_038", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 1}
+{"case_id": "EC_038", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_038", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": -200.9, "late_seller_count": 0}
+{"case_id": "EC_038", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "unsupported_late_claim", "refund_brl": 0.0}
+{"case_id": "EC_038", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_038.json"}
+{"case_id": "EC_039", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "8ac5066a163c60c1ae9bf17200df3dd1"}
+{"case_id": "EC_039", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_039", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 1}
+{"case_id": "EC_039", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_039", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": 421.86, "late_seller_count": 1}
+{"case_id": "EC_039", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "late_delivery_seller", "refund_brl": 30.54}
+{"case_id": "EC_039", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_039.json"}
+{"case_id": "EC_040", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "992cbe3e064cd39f9ccde60a29ffcd3c"}
+{"case_id": "EC_040", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_040", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 1}
+{"case_id": "EC_040", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_040", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": 429.37, "late_seller_count": 0}
+{"case_id": "EC_040", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "late_delivery_logistics", "refund_brl": 75.98}
+{"case_id": "EC_040", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_040.json"}
+{"case_id": "EC_041", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "614bc59c7d5e038587336616e3198e33"}
+{"case_id": "EC_041", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_041", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 2}
+{"case_id": "EC_041", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_041", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": -315.14, "late_seller_count": 0}
+{"case_id": "EC_041", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "valid_split_payment", "refund_brl": 0.0}
+{"case_id": "EC_041", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_041.json"}
+{"case_id": "EC_042", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "0c65eb5a1415db7a20dfc869c9277e7a"}
+{"case_id": "EC_042", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_042", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 1, "seller_count": 1}
+{"case_id": "EC_042", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_042", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": 203.67, "late_seller_count": 1}
+{"case_id": "EC_042", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "late_delivery_seller", "refund_brl": 17.6}
+{"case_id": "EC_042", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_042.json"}
+{"case_id": "EC_043", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "e58fb7bfd033514475ab0883ded704f4"}
+{"case_id": "EC_043", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_043", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 0, "seller_count": 0}
+{"case_id": "EC_043", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": null}
+{"case_id": "EC_043", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": null, "late_seller_count": 0}
+{"case_id": "EC_043", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "unavailable_order_paid", "refund_brl": 18.37}
+{"case_id": "EC_043", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_043.json"}
+{"case_id": "EC_044", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "a833e4af2b4c893929b9f3adce3ecbeb"}
+{"case_id": "EC_044", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_044", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 2}
+{"case_id": "EC_044", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_044", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": -364.67, "late_seller_count": 0}
+{"case_id": "EC_044", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "unsupported_late_claim", "refund_brl": 0.0}
+{"case_id": "EC_044", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_044.json"}
+{"case_id": "EC_045", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "fe64170e936bc5f6a6a41def260984b9"}
+{"case_id": "EC_045", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_045", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 2}
+{"case_id": "EC_045", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_045", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": -436.81, "late_seller_count": 0}
+{"case_id": "EC_045", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "unsupported_late_claim", "refund_brl": 0.0}
+{"case_id": "EC_045", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_045.json"}
+{"case_id": "EC_046", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "0e3ec3c17b64c6cc7bc01bba21e7afdf"}
+{"case_id": "EC_046", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_046", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 1}
+{"case_id": "EC_046", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_046", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": 317.79, "late_seller_count": 1}
+{"case_id": "EC_046", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "late_delivery_seller", "refund_brl": 25.52}
+{"case_id": "EC_046", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_046.json"}
+{"case_id": "EC_047", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "2cfc79d9582e9135c0a9b61fa60e6b21"}
+{"case_id": "EC_047", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_047", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 1, "seller_count": 1}
+{"case_id": "EC_047", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_047", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": null, "late_seller_count": 0}
+{"case_id": "EC_047", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "canceled_order_paid", "refund_brl": 79.56}
+{"case_id": "EC_047", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_047.json"}
+{"case_id": "EC_048", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "b8ed89bd3f1fe72244f0f616acdc7da1"}
+{"case_id": "EC_048", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 1}
+{"case_id": "EC_048", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 3, "seller_count": 1}
+{"case_id": "EC_048", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_048", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": 185.7, "late_seller_count": 1}
+{"case_id": "EC_048", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "late_delivery_seller", "refund_brl": 49.74}
+{"case_id": "EC_048", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_048.json"}
+{"case_id": "EC_049", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "7c29f6fa9efcbf410b4bbb9362b9f7c9"}
+{"case_id": "EC_049", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_049", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 3, "seller_count": 3}
+{"case_id": "EC_049", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_049", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": -463.67, "late_seller_count": 0}
+{"case_id": "EC_049", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "valid_split_payment", "refund_brl": 0.0}
+{"case_id": "EC_049", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_049.json"}
+{"case_id": "EC_050", "model": "deterministic_ec_policy_v2", "sequence": 1, "agent": "coordinator", "event": "case_received", "order_id": "370098d35ccd8a2af86b57c81ac7d24f"}
+{"case_id": "EC_050", "model": "deterministic_ec_policy_v2", "sequence": 2, "agent": "customer", "event": "handoff", "related_order_count": 0}
+{"case_id": "EC_050", "model": "deterministic_ec_policy_v2", "sequence": 3, "agent": "order_product", "event": "handoff", "item_count": 2, "seller_count": 2}
+{"case_id": "EC_050", "model": "deterministic_ec_policy_v2", "sequence": 4, "agent": "payment", "event": "handoff", "reconciled": true}
+{"case_id": "EC_050", "model": "deterministic_ec_policy_v2", "sequence": 5, "agent": "delivery", "event": "handoff", "delivery_variance_hours": -437.51, "late_seller_count": 0}
+{"case_id": "EC_050", "model": "deterministic_ec_policy_v2", "sequence": 6, "agent": "policy", "event": "decision", "primary_issue": "unsupported_late_claim", "refund_brl": 0.0}
+{"case_id": "EC_050", "model": "deterministic_ec_policy_v2", "sequence": 7, "agent": "verifier", "event": "schema_validated", "output": "output\\EC_050.json"}

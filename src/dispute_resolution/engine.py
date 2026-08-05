@@ -111,7 +111,6 @@ class OlistData:
     items_by_order: dict[str, list[dict[str, str]]]
     payments_by_order: dict[str, list[dict[str, str]]]
     products: dict[str, dict[str, str]]
-    category_translations: dict[str, str]
     orders_by_customer: dict[str, list[str]]
 
     @classmethod
@@ -127,10 +126,6 @@ class OlistData:
         products = {
             row["product_id"]: row
             for row in iter_csv(data_dir, "olist_products_dataset.csv")
-        }
-        translations = {
-            row["product_category_name"]: row["product_category_name_english"]
-            for row in iter_csv(data_dir, "product_category_name_translation.csv")
         }
         items_by_order: dict[str, list[dict[str, str]]] = defaultdict(list)
         payments_by_order: dict[str, list[dict[str, str]]] = defaultdict(list)
@@ -149,7 +144,6 @@ class OlistData:
             items_by_order=dict(items_by_order),
             payments_by_order=dict(payments_by_order),
             products=products,
-            category_translations=translations,
             orders_by_customer=dict(orders_by_customer),
         )
 
@@ -188,7 +182,7 @@ class OrderProductAgent:
         categories: list[str | None] = []
         for product_id in all_product_ids:
             raw_category = self.data.products.get(product_id, {}).get("product_category_name")
-            categories.append(self.data.category_translations.get(raw_category, raw_category))
+            categories.append(raw_category)
         all_categories = stable_unique(categories)
         context = {
             "product_ids": all_product_ids[:5] if include_product_context else [],

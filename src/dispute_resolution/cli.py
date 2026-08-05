@@ -211,7 +211,7 @@ def source_consistency_errors(
     categories = []
     for product_id in all_products:
         raw = data.products.get(product_id, {}).get("product_category_name")
-        categories.append(data.category_translations.get(raw, raw))
+        categories.append(raw)
     expected_product_context = {
         "product_ids": all_products[:5],
         "category_names": stable_unique(categories, limit=5),

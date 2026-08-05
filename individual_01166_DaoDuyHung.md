@@ -15,12 +15,12 @@
 | --- | --- | --- | --- | --- |
 | Điều phối và xử lý case | `src/dispute_resolution/engine.py` | JSON case, CSV Olist | JSON theo output schema | Hoàn thành |
 | CLI, batch run và trace | `src/dispute_resolution/cli.py` | 50 input cases | 50 output JSON, trace JSONL | Hoàn thành |
-| Kiểm tra đầu vào/đầu ra | `cli.py`, `tests/test_preflight.py` | Source data và candidate output | Báo lỗi hoặc xác nhận hợp lệ | Hoàn thành |
+| Kiểm tra đầu vào/đầu ra | `cli.py`, `tests/test_pipeline.py` | Source data và candidate output | Báo lỗi hoặc xác nhận hợp lệ | Hoàn thành |
 | Kiến trúc và metadata | `architecture.md`, `logging/metadata.json` | Quy định đề bài | Tài liệu và metadata runtime | Hoàn thành |
 
 ## 3. Kết quả bàn giao
 
-- Pipeline đọc 9 CSV, join dữ liệu theo `order_id`, `customer_id`, `product_id` và `seller_id`.
+- Preflight kiểm tra đủ 9 CSV; pipeline nạp các bảng cần thiết và join theo `order_id`, `customer_id`, `product_id` và `seller_id`.
 - 50 file `output/EC_001.json` đến `output/EC_050.json` được tạo bằng `EC_POLICY_V2`.
 - `logging/trace.jsonl` có 350 sự kiện: 7 handoff/decision thực thi cho mỗi case.
 - Lệnh `python -m dispute_resolution.cli verify` tính lại toàn bộ case và so sánh output đã lưu với kết quả mới.
@@ -50,6 +50,7 @@ $env:PYTHONPATH='src'
 python -m dispute_resolution.cli preflight
 python -m dispute_resolution.cli run
 python -m dispute_resolution.cli verify
+python -m dispute_resolution.cli package
 ```
 
 Kết quả mong đợi và đã xác minh: 9 dataset, 50 input, 50 output hợp lệ và 350 sự kiện trace.
@@ -64,11 +65,11 @@ Kết quả mong đợi và đã xác minh: 9 dataset, 50 input, 50 output hợp
 
 ## 6. Lỗi đã xử lý
 
-- **Triệu chứng:** Batch đầu tiên dừng với `KeyError: product_category_name`.
-- **Nguyên nhân gốc:** Header của `product_category_name_translation.csv` có UTF-8 BOM.
-- **Cách xử lý:** Loader đọc CSV bằng `utf-8-sig`, tương thích cả UTF-8 thường và UTF-8 có BOM.
-- **Xác minh:** Batch sau đó sinh đủ 50 output; lệnh verifier xác nhận toàn bộ kết quả.
-- **Bài học:** Cần chuẩn hóa encoding ở lớp ingest trước khi áp dụng join theo tên cột.
+- **Triệu chứng:** File ZIP ban đầu bị hệ thống nộp bài từ chối dù có đủ 50 JSON.
+- **Nguyên nhân gốc:** Các entry nằm ở gốc ZIP thay vì có đường dẫn `output/EC_NNN.json`.
+- **Cách xử lý:** Packager ghi đúng tiền tố `output/` cho toàn bộ 50 entry.
+- **Xác minh:** Danh sách ZIP hiện chạy liên tục từ `output/EC_001.json` đến `output/EC_050.json` và không có entry lạ.
+- **Bài học:** Cần kiểm tra cả đường dẫn nội bộ của archive, không chỉ số lượng file.
 
 ## 7. Hiểu biết end-to-end
 

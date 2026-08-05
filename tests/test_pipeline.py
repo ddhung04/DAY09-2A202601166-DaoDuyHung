@@ -72,6 +72,11 @@ class PipelineTests(unittest.TestCase):
             checked += 1
         self.assertGreater(checked, 0)
 
+    def test_product_categories_keep_source_values(self) -> None:
+        case = load_case(self.root / "input" / "EC_002.json")
+        result = self.resolver.resolve(case)
+        self.assertEqual(result["product_context"]["category_names"], ["esporte_lazer"])
+
     def test_stored_outputs_are_valid_json(self) -> None:
         names = sorted(path.name for path in (self.root / "output").glob("*.json"))
         self.assertEqual(names, [f"EC_{number:03d}.json" for number in range(1, 51)])

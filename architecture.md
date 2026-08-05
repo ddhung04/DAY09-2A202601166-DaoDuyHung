@@ -51,7 +51,7 @@ Mỗi case tạo đúng 7 trace event theo thứ tự: coordinator, customer, or
 | --- | --- | --- | --- |
 | Coordinator | Case JSON, lookup đã nạp, handoff của agent | Output candidate | Không tự tạo fact ngoài handoff |
 | CustomerAgent | `orders`, `customers` | Customer ID duy nhất và tối đa 5 related orders | Không đưa order lịch sử vào affected entities |
-| OrderProductAgent | `order_items`, `products`, category translation | Item, seller, product và category theo thứ tự nguồn | Không sửa CSV; chỉ trả ID tồn tại |
+| OrderProductAgent | `order_items`, `products` | Item, seller, product và category gốc theo thứ tự nguồn | Không sửa CSV; chỉ trả ID tồn tại |
 | PaymentAgent | `order_items`, `order_payments` | Đối soát bằng `Decimal` | Không coi installment là payment row mới |
 | DeliveryAgent | `orders`, `order_items` | Delivery/handoff variance | Không tạo tracking checkpoint |
 | PolicyAgent | Handoff đã kiểm chứng | Issue, cause, responsibility, refund, actions | Chỉ dùng `EC_POLICY_V2`; unmatched case là lỗi |

@@ -7,93 +7,76 @@
 | Họ và tên | Đào Duy Hưng |
 | MSSV | 2A202601166 |
 | Khóa/Lớp | K4 |
-| Vai trò chính | Thiết kế coordinator, policy engine, verifier và batch pipeline |
-| Ngày hoàn thành | 2026-08-05 |
+| Vai trò chính | Thiết kế và triển khai pipeline điều phối, policy và verifier |
 
-## 2. Vai trò và phạm vi công việc
+## 2. Phạm vi công việc sở hữu
 
-| Module/deliverable | File/hàm phụ trách | Input nhận vào | Output bàn giao | Trạng thái |
+| Module/deliverable | File phụ trách | Input | Output | Trạng thái |
 | --- | --- | --- | --- | --- |
-| Data ingest và lookup | `OlistData.from_directory` | 9 CSV Olist | Lookup theo order/customer/product | Hoàn thành |
-| Agent orchestration | `CaseResolver` và specialist classes | Một case JSON | Candidate output đã tổng hợp | Hoàn thành |
-| Policy V2 | `PolicyAgent.decide` | Handoff đã kiểm chứng | Issue, party, refund, actions | Hoàn thành |
-| Hard gate | `VerifierAgent`, `validate_output` | Candidate output | Pass hoặc lỗi chi tiết | Hoàn thành |
-| Batch/trace/package | `cli.py` | 50 input cases | 50 JSON, trace, `output.zip` | Hoàn thành |
-| Tài liệu | `architecture.md`, report, metadata | Source và kết quả chạy | Tài liệu bàn giao | Hoàn thành |
+| Điều phối và xử lý case | `src/dispute_resolution/engine.py` | JSON case, CSV Olist | JSON theo output schema | Hoàn thành |
+| CLI, batch run và trace | `src/dispute_resolution/cli.py` | 50 input cases | 50 output JSON, trace JSONL | Hoàn thành |
+| Kiểm tra đầu vào/đầu ra | `cli.py`, `tests/test_preflight.py` | Source data và candidate output | Báo lỗi hoặc xác nhận hợp lệ | Hoàn thành |
+| Kiến trúc và metadata | `architecture.md`, `logging/metadata.json` | Quy định đề bài | Tài liệu và metadata runtime | Hoàn thành |
 
-## 3. Kết quả theo vai trò
+## 3. Kết quả bàn giao
 
-| Nhiệm vụ | Artifact | Kết quả | Cách xác minh |
-| --- | --- | --- | --- |
-| Join và xử lý 50 case | `output/EC_001.json`–`EC_050.json` | Đủ 50 output | CLI `verify` |
-| Bao phủ taxonomy | 6 primary issue | 8 canceled, 6 unavailable, 10 seller, 10 logistics, 8 split, 8 unsupported | Unit test distribution |
-| Trace A2A | `logging/trace.jsonl` | 350 event, 7 event/case | CLI kiểm tra sequence/agent/model |
-| Gói nộp | `output.zip` | Đúng 50 JSON, không entry lạ | Đọc lại ZIP entry list |
-
-Artifact chính là pipeline có thể tái chạy từ dữ liệu gốc. Output lưu sẵn không được tin mặc định: verifier tái tính lại và đối chiếu từng file với source trước khi đóng gói.
+- Pipeline đọc 9 CSV, join dữ liệu theo `order_id`, `customer_id`, `product_id` và `seller_id`.
+- 50 file `output/EC_001.json` đến `output/EC_050.json` được tạo bằng `EC_POLICY_V2`.
+- `logging/trace.jsonl` có 350 sự kiện: 7 handoff/decision thực thi cho mỗi case.
+- Lệnh `python -m dispute_resolution.cli verify` tính lại toàn bộ case và so sánh output đã lưu với kết quả mới.
 
 ## 4. Giải thích kỹ thuật
 
-### Vấn đề cần giải quyết
+### Vấn đề giải quyết
 
-Mỗi yêu cầu chỉ cung cấp một `claimed_order_id`. Hệ thống phải điều tra nhiều domain dữ liệu để phân biệt đơn hủy/không khả dụng đã trả tiền, giao trễ do seller, giao trễ do logistics, split payment hợp lệ và claim giao trễ không được dữ liệu hỗ trợ. Kết quả phải chứa đầy đủ context, evidence và số tiền mà không tạo fact ngoài CSV.
+Mỗi khiếu nại chỉ cung cấp `claimed_order_id`; hệ thống phải đối soát độc lập tình trạng order, item, seller, payment, khách hàng và thời gian giao để kết luận có hoàn tiền hay không. Các kết luận không được dựa trên thông tin không tồn tại trong dữ liệu Olist.
 
 ### Cách triển khai
 
-CSV được stream một lần để tạo các index dùng chung cho 50 case. Coordinator chuyển cùng order cho bốn specialist agent. Payment dùng `Decimal`; Delivery dùng timestamp gốc; OrderProduct giữ stable source order và dịch category sang English qua bảng translation. PolicyAgent áp dụng precedence tường minh và ném `PolicyError` nếu không nhánh nào khớp. Verifier kiểm tra schema và quan hệ chéo trước khi file được ghi.
+`CaseResolver` đóng vai trò coordinator. Các hàm `customer_agent`, `order_product_agent`, `payment_agent` và `delivery_agent` tạo các handoff dữ liệu có cấu trúc. `policy_agent` áp dụng thứ tự ưu tiên của `EC_POLICY_V2`; `validate_output` chặn output vượt giới hạn, confidence sai hoặc evidence ID sai prefix. Mọi phép tính tiền dùng `Decimal`; variance giao hàng dùng timestamp CSV và được làm tròn hai chữ số.
 
-### Input, output và contract
-
-| Thành phần | Mô tả |
+| Thành phần | Contract |
 | --- | --- |
-| Input | `input/EC_NNN.json`, 9 CSV trong `data/` |
-| Output | JSON đúng schema đề bài, tối đa theo các limit được quy định |
-| Module phụ thuộc | Python 3.11 standard library; không có runtime dependency ngoài |
-| Module sử dụng output | Verifier, trace writer và ZIP packager |
-| Điều kiện lỗi | Thiếu file/case, sai policy/scope, order/customer không tồn tại, policy unmatched, schema/evidence/refund sai |
+| Input | Một JSON case hợp lệ với `claimed_order_id` và `EC_POLICY_V2` |
+| Output | Một JSON theo schema đề bài, không chứa dữ liệu suy diễn |
+| Phụ thuộc | CSV trong `data/` và JSON trong `input/` |
+| Nơi dùng output | `output/`, trace và bước đóng gói nộp bài |
+| Lỗi xử lý | Thiếu dataset/case, JSON sai, order/customer không tồn tại, vượt schema limit |
 
 ### Cách xác minh
 
 ```powershell
 $env:PYTHONPATH='src'
-python -m unittest discover -s tests -v
+python -m dispute_resolution.cli preflight
 python -m dispute_resolution.cli run
 python -m dispute_resolution.cli verify
-python -m dispute_resolution.cli package
 ```
 
-- **Kết quả mong đợi:** 6 test pass; 50 output hợp lệ; 350 trace event; ZIP có 50 JSON.
-- **Kết quả thực tế:** đạt đủ bốn điều kiện trên.
-- **Artifact/log:** `output/`, `logging/trace.jsonl`, `output.zip`.
+Kết quả mong đợi và đã xác minh: 9 dataset, 50 input, 50 output hợp lệ và 350 sự kiện trace.
 
 ## 5. Quyết định kỹ thuật quan trọng
 
-- **Bối cảnh:** Bài toán cần độ đúng số học và evidence cao hơn khả năng diễn giải ngôn ngữ tự nhiên.
-- **Phương án cân nhắc:** (1) cho LLM đọc và quyết định toàn bộ; (2) dùng LLM điều phối tool; (3) dùng deterministic multi-agent rule engine.
-- **Phương án chọn:** Deterministic multi-agent rule engine, không dùng LLM.
-- **Lý do:** Kết quả tái lập, parameter size bằng 0 nên đáp ứng giới hạn 10B, không tốn API, tránh hallucination và dễ kiểm chứng từng rule.
-- **Bằng chứng:** Cả 50 case thỏa đúng một nhánh policy tường minh; verifier tái tính và source-audit trước khi package.
+- **Bối cảnh:** Các trường thời gian và số tiền phải khớp tuyệt đối với CSV; LLM có thể tạo bằng chứng không tồn tại.
+- **Phương án cân nhắc:** Dùng LLM cho toàn bộ suy luận; hoặc dùng rule engine xác định, LLM chỉ để diễn giải.
+- **Phương án chọn:** Rule engine Python cho toàn bộ join, tính toán, policy, ID và output.
+- **Lý do:** Tái lập được kết quả, tránh hallucination và đảm bảo quy tắc ưu tiên được áp dụng chính xác.
+- **Bằng chứng:** Lệnh `verify` tính lại và so sánh cấu trúc dữ liệu của cả 50 output.
 
-## 6. Lỗi hoặc blocker đã xử lý
+## 6. Lỗi đã xử lý
 
-- **Triệu chứng:** Lần chạy đầu báo `KeyError: product_category_name`.
-- **Bước tái hiện:** Đọc file `product_category_name_translation.csv` bằng encoding UTF-8 thông thường và truy cập header.
-- **Nguyên nhân gốc:** File translation có UTF-8 BOM ở tên cột đầu tiên.
-- **Cách xử lý:** Loader dùng `utf-8-sig`, tương thích cả file có và không có BOM.
-- **Xác minh sau sửa:** 50 case load, resolve và verify thành công.
-- **Điều học được:** Encoding phải được chuẩn hóa tại data boundary, trước mọi join theo column name.
+- **Triệu chứng:** Batch đầu tiên dừng với `KeyError: product_category_name`.
+- **Nguyên nhân gốc:** Header của `product_category_name_translation.csv` có UTF-8 BOM.
+- **Cách xử lý:** Loader đọc CSV bằng `utf-8-sig`, tương thích cả UTF-8 thường và UTF-8 có BOM.
+- **Xác minh:** Batch sau đó sinh đủ 50 output; lệnh verifier xác nhận toàn bộ kết quả.
+- **Bài học:** Cần chuẩn hóa encoding ở lớp ingest trước khi áp dụng join theo tên cột.
 
-## 7. Hiểu biết về luồng end-to-end
+## 7. Hiểu biết end-to-end
 
-Input case đi vào coordinator. CustomerAgent tìm identity/history; OrderProductAgent lấy entity và category; PaymentAgent đối soát tiền; DeliveryAgent tính variance. PolicyAgent áp dụng thứ tự ưu tiên và tạo resolution. Verifier kiểm tra hard gate rồi output/trace mới được ghi. Lệnh `verify` không chỉ parse JSON mà còn tái tính và kiểm tra entity, customer/product context, primary/secondary predicates, refund và evidence với CSV. Lệnh `package` chỉ chạy sau khi verify pass và tạo ZIP bằng danh sách trắng 50 filename.
+Case JSON đi vào coordinator, sau đó các agent chuyên trách truy xuất dữ liệu chỉ đọc và gửi handoff có cấu trúc. Policy agent chọn primary issue theo thứ tự ưu tiên, tạo refund/actions; verifier kiểm tra giới hạn mảng, evidence, confidence và null handling trước khi ghi output. Trace lưu thứ tự coordinator → customer → order-product → payment → delivery → policy → verifier cho từng case. Chất lượng được đo bằng khả năng tái tính 50 output từ dữ liệu gốc và xác minh không có lệch kết quả.
 
 ## 8. Cam kết
 
-- [x] Nội dung phản ánh đúng phần việc và mức hiểu của tôi.
-- [x] Tôi có thể giải thích luồng end-to-end và từng handoff.
-- [x] Không ghi “đã chạy thành công” cho phần chưa kiểm chứng.
-- [x] Báo cáo không chứa `.env`, API key, token hoặc secret.
-- [x] Báo cáo không sao chép báo cáo thành viên khác.
-
-**Họ và tên:** Đào Duy Hưng  
-**Ngày xác nhận:** 2026-08-05
+- [x] Nội dung phản ánh đúng phần việc đã thực hiện.
+- [x] Có thể giải thích luồng end-to-end.
+- [x] Chỉ ghi kết quả đã được chạy và xác minh.
+- [x] Báo cáo không chứa API key, token hoặc secret.
